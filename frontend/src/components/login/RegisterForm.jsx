@@ -6,7 +6,12 @@ import DateOfBirthSelect from "./DateOfBirthSelect";
 import GenderSelect from "./GenderSelect";
 import DotLoader from "react-spinners/DotLoader";
 import axios from "axios";
-export default function RegisterForm() {
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+export default function RegisterForm({ setVisible }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userInfos = {
     first_name: "",
     last_name: "",
@@ -85,6 +90,14 @@ export default function RegisterForm() {
       );
       setError("");
       setSuccess(data.message);
+      const { message, ...rest } = data;
+      setTimeout =
+        (() => {
+          dispatch({ type: "LOGIN", payload: rest });
+          Cookies.set("user", JSON.stringify(rest));
+          navigate("/");
+        },
+        2000);
     } catch (error) {
       setLoading(false);
       setSuccess("");
@@ -96,7 +109,9 @@ export default function RegisterForm() {
     <div className="blur">
       <div className="register">
         <div className="register_header">
-          <i className="exit_icon">X</i>
+          <i className="exit_icon" onClick={() => setVisible(false)}>
+            X
+          </i>
           <span>Sign Up</span>
           <span>it's quick and easy</span>
         </div>
